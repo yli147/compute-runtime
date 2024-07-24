@@ -85,6 +85,9 @@ macro(copy_gmm_dll_for target)
   endif()
 endmacro()
 
+message("AAAAAAAAAAAAAAAAAA ${NEO__GMM_LIBRARY_PATH}")
+message("AAAAAAAAAAAAAAAAAA ${NEO__GMM_INCLUDE_DIR}")
+message("AAAAAAAAAAAAAAAAAA ${GMM_LINK_NAME}")
 link_directories(${NEO__GMM_LIBRARY_PATH})
 
 add_definitions(-DGMM_OCL)

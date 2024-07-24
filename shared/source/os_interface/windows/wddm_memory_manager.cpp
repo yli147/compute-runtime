@@ -43,7 +43,6 @@
 #include "shared/source/release_helper/release_helper.h"
 
 #include <algorithm>
-#include <emmintrin.h>
 
 namespace NEO {
 
@@ -1129,6 +1128,7 @@ bool WddmMemoryManager::isCpuCopyRequired(const void *ptr) {
     volatile int *localVariablePointer = &cacheable;
     volatile int *volatileInputPtr = (volatile int *)(ptr);
 
+    /*
     volatile int64_t timestamp0, timestamp1, localVariableReadDelta, inputPointerReadDelta;
 
     // compute timing overhead
@@ -1163,6 +1163,8 @@ bool WddmMemoryManager::isCpuCopyRequired(const void *ptr) {
     // dummy read
     // cacheable = *volatileInputPtr;
 
+    */
+    /*
     _mm_lfence();
     timestamp0 = __rdtsc();
     _mm_lfence();
@@ -1176,8 +1178,10 @@ bool WddmMemoryManager::isCpuCopyRequired(const void *ptr) {
     }
     max = std::max(max, localVariableReadDelta);
     min = std::min(min, inputPointerReadDelta);
+    */
     // UNRECOVERABLE_IF(max > min);
-    return inputPointerReadDelta > slownessFactor * fastestLocalRead;
+    // return inputPointerReadDelta > slownessFactor * fastestLocalRead;
+    return 0;
 }
 
 bool WddmMemoryManager::copyMemoryToAllocation(GraphicsAllocation *graphicsAllocation, size_t destinationOffset, const void *memoryToCopy, size_t sizeToCopy) {

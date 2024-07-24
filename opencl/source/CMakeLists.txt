@@ -179,6 +179,8 @@ if(${GENERATE_EXECUTABLE})
                    ${NEO_SHARED_DIRECTORY}/os_interface/windows/gmm_interface_win.cpp
     )
   else()
+    target_link_directories(${NEO_DYNAMIC_LIB_NAME} PRIVATE ${NEO__GMM_LIBRARY_PATH})
+    message("AAAAAAAAAA ${NEO__GMM_LIBRARY_PATH}")
     target_link_libraries(${NEO_DYNAMIC_LIB_NAME} PRIVATE ${GMM_LINK_NAME})
     target_include_directories(${NEO_DYNAMIC_LIB_NAME} PRIVATE
                                ${NEO_SHARED_DIRECTORY}/dll/devices${BRANCH_DIR_SUFFIX}
