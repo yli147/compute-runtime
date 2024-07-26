@@ -11,6 +11,8 @@
 #include <immintrin.h>
 #include <intrin.h>
 #pragma intrinsic(__rdtsc)
+#elif defined(__riscv)
+// do nothing
 #else
 #include <immintrin.h>
 #include <x86intrin.h>
@@ -18,7 +20,9 @@
 
 #if defined(__ARM_ARCH)
 #include <sse2neon.h>
-#else
+#elif defined(__riscv)
+// do nothing
+#else 
 #include <emmintrin.h>
 #endif
 
@@ -26,23 +30,24 @@ namespace NEO {
 namespace CpuIntrinsics {
 
 void clFlush(void const *ptr) {
-    _mm_clflush(ptr);
+	__asm__ __volatile__ ("fence.i");
+	__asm__ __volatile__ ("sfence.vma %0" : : "r" (ptr));
 }
 
 void clFlushOpt(void *ptr) {
 #ifdef SUPPORTS_CLFLUSHOPT
     _mm_clflushopt(ptr);
 #else
-    _mm_clflush(ptr);
+    clFlush(ptr);
 #endif
 }
 
 void sfence() {
-    _mm_sfence();
+    __asm__ __volatile__ ("fence w, w");
 }
 
 void pause() {
-    _mm_pause();
+	__asm__ __volatile__ ("nop");
 }
 
 unsigned char umwait(unsigned int ctrl, uint64_t counter) {
@@ -60,7 +65,10 @@ void umonitor(void *a) {
 }
 
 uint64_t rdtsc() {
-    return __rdtsc();
+	uint64_t result;
+	__asm__ __volatile__ ("rdcycle %0" : "=r" (result));
+
+	return result;
 }
 
 } // namespace CpuIntrinsics
