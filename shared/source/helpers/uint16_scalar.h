@@ -85,10 +85,11 @@ struct uint16x8_t { // NOLINT(readability-identifier-naming)
 
     inline operator bool() const {
 	    for (int i = 0; i < 8; i++)
-		if ((value[i] & mask().value[i]) == 1)
-			return 0;
-
-	    return 1;
+		if ((value[i] & mask().value[i])) {
+			// PRINT_DEBUG_STRING(NEO::debugManager.flags.PrintDebugMessages.get(), stderr, "##(%08x)", value[i]);
+			return 1;
+		}
+	    return 0;
     }
 
     inline uint16x8_t &operator-=(const uint16x8_t &a) {
@@ -143,19 +144,21 @@ struct uint16x8_t { // NOLINT(readability-identifier-naming)
 		// we need to treat the uint16 to two uint8.
 		uint8_t v1, v2;
 
-		if (HIGH_8BITS(mask.value[i]) == 1)
+		if (HIGH_8BITS(mask.value[i]) == 0xffu)
 			v1 = HIGH_8BITS(a.value[i]);
 		else
 			v1 = HIGH_8BITS(b.value[i]);
 
-		if (LOW_8BITS(mask.value[i]) == 1)
+		if (LOW_8BITS(mask.value[i]) == 0xffu)
 			v2 = LOW_8BITS(a.value[i]);
 		else
 			v2 = LOW_8BITS(b.value[i]);
 
 		result.value[i] = ((uint16_t)v1 << 8) | v2;
+    // PRINT_DEBUG_STRING(NEO::debugManager.flags.PrintDebugMessages.get(), stderr, "%08x ", result.value[i]);
 	}
 
+  // PRINT_DEBUG_STRING(NEO::debugManager.flags.PrintDebugMessages.get(), stderr, "\n");
         return result;
     }
 };
